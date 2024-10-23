@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MultiAI</string>
+    <string name="message_hint">Nachricht eingeben...</string>
+    <string name="send">Senden</string>
+    <string name="error_no_service">Kein Service ausgewählt</string>
+    <string name="error_sending_message">Fehler beim Senden der Nachricht</string>
+</resources>
