@@ -1,14 +1,21 @@
 Ordnerstrukrur: 
 
 .
+./.gradle
 ./app
 ./app/src
 ./app/src/main
 ./app/src/main/res
+./app/src/main/res/mipmap-hdpi
+./app/src/main/res/mipmap
+./app/src/main/res/mipmap-xhdpi
 ./app/src/main/res/values
 ./app/src/main/res/drawable
+./app/src/main/res/mipmap-mdpi
 ./app/src/main/res/layout
+./app/src/main/res/mipmap-xxxhdpi
 ./app/src/main/res/menu
+./app/src/main/res/mipmap-xxhdpi
 ./app/src/main/java
 ./app/src/main/java/com
 ./app/src/main/java/com/example
@@ -23,12 +30,22 @@ Ordnerstrukrur:
 ./app/src/main/java/com/example/multiai/data/db/entities
 ./app/src/main/java/com/example/multiai/data/api
 ./app/src/main/java/com/example/multiai/data/api/models
+./res
+./res/mipmap
+./res/mipmap/ic_launcher.xml
+./gradle
+./gradle/wrapper
+./and
 
 
 Dateien: 
 
+./settings.gradle
+./app/src/main/res/mipmap/ic_launcher.xml
 ./app/src/main/res/values/colors.xml
 ./app/src/main/res/values/strings.xml
+./app/src/main/res/values/styles.xml
+./app/src/main/res/drawable/ic_send.xml
 ./app/src/main/res/layout/item_message.xml
 ./app/src/main/res/layout/activity_chat.xml
 ./app/src/main/java/com/example/multiai/di/DatabaseModule.kt
@@ -44,23 +61,43 @@ Dateien:
 ./app/src/main/java/com/example/multiai/data/api/models/ChatResponse.kt
 ./app/src/main/java/com/example/multiai/data/api/MultiAIService.kt
 ./app/src/main/AndroidManifest.xml
+./gradle/wrapper/gradle-wrapper.properties
+./o.txt
+./README.md
+./gradle.properties
 ./output.txt
+./build.gradle.bak
+./build.gradle
 
 
 Dateiinhalte: 
 
+./settings.gradle:
+
+include ':app'
+./app/src/main/res/mipmap/ic_launcher.xml:
+
+<!-- ic_launcher.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
+     <!-- ic_launcher_round.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
 ./app/src/main/res/values/colors.xml:
 
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#1976D2</color>
-    <color name="primary_dark">#1565C0</color>
-    <color name="primary_light">#BBDEFB</color>
-    <color name="accent">#FF4081</color>
-    <color name="received_message_background">#F5F5F5</color>
-    <color name="received_message_text">#000000</color>
-    <color name="sent_message_text">#FFFFFF</color>
-</resources>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="white">#FFFFFF</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="
+
 
 ./app/src/main/res/values/strings.xml:
 
@@ -71,6 +108,34 @@ Dateiinhalte:
     <string name="error_no_service">Kein Service ausgewählt</string>
     <string name="error_sending_message">Fehler beim Senden der Nachricht</string>
 </resources>
+
+./app/src/main/res/values/styles.xml:
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.MultiAI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/purple_700</item>
+    </style>
+</resources>
+
+
+./app/src/main/res/drawable/ic_send.xml:
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="?attr/colorControlNormal"
+        android:pathData="M2.01,21L23,12 2.01,3 2,10l15,2 -15,2z"/>
+</vector>
 
 ./app/src/main/res/layout/item_message.xml:
 
@@ -367,11 +432,185 @@ class ChatActivity : AppCompatActivity() {
 
 ./app/src/main/java/com/example/multiai/ui/chat/adapters/ChatAdapter.kt:
 
-# Inhalt wie vorher gezeigt in ChatAdapter.kt
+package com.example.multiai.ui.chat.adapters
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.Gravity
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.databinding.ItemMessageBinding
+import io.noties.markwon.Markwon
+
+class ChatAdapter : ListAdapter<Message, ChatAdapter.MessageViewHolder>(MessageDiffCallback()) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+        val binding = ItemMessageBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return MessageViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    inner class MessageViewHolder(
+        private val binding: ItemMessageBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        
+        private val markwon = Markwon.create(binding.root.context)
+
+        fun bind(message: Message) {
+            binding.apply {
+                if (message.isFromUser) {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.END
+                        marginStart = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                } else {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.START
+                        marginStart = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                    // Parse Markdown für Bot-Antworten
+                    markwon.setMarkdown(messageText, message.content)
+                }
+
+                // Normale Textnachricht für Benutzer
+                if (message.isFromUser) {
+                    messageText.text = message.content
+                }
+            }
+        }
+    }
+
+    class MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
 
 ./app/src/main/java/com/example/multiai/ui/chat/ChatViewModel.kt:
 
-# Inhalt wie vorher gezeigt in ChatViewModel.kt
+package com.example.multiai.ui.chat
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.data.repository.ChatRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val repository: ChatRepository
+) : ViewModel() {
+
+    private val _messages = MutableLiveData<List<Message>>()
+    val messages: LiveData<List<Message>> = _messages
+
+    private val _availableServices = MutableLiveData<List<String>>()
+    val availableServices: LiveData<List<String>> = _availableServices
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Success)
+    val uiState: StateFlow<UiState> = _uiState
+
+    private var currentService: String? = null
+
+    init {
+        loadServices()
+        observeMessages()
+    }
+
+    private fun observeMessages() {
+        viewModelScope.launch {
+            repository.getAllMessages()
+                .catch { e -> 
+                    _uiState.value = UiState.Error(e.message ?: "Fehler beim Laden der Nachrichten")
+                }
+                .collect { messages ->
+                    _messages.value = messages
+                }
+        }
+    }
+
+    private fun loadServices() {
+        viewModelScope.launch {
+            try {
+                val services = repository.getAvailableServices()
+                _availableServices.value = services
+                if (services.isNotEmpty() && currentService == null) {
+                    currentService = services.first()
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Laden der Services: ${e.message}")
+            }
+        }
+    }
+
+    fun sendMessage(content: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.value = UiState.Loading
+
+                currentService?.let { service ->
+                    // Speichere Benutzernachricht
+                    val userMessage = Message(
+                        content = content,
+                        isFromUser = true,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(userMessage)
+
+                    // Sende an API
+                    val response = repository.sendMessage(service, content)
+
+                    // Speichere Bot-Antwort
+                    val botMessage = Message(
+                        content = response.response,
+                        isFromUser = false,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(botMessage)
+
+                    _uiState.value = UiState.Success
+                } ?: run {
+                    _uiState.value = UiState.Error("Kein Service ausgewählt")
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Senden der Nachricht: ${e.message}")
+            }
+        }
+    }
+
+    fun setCurrentService(service: String) {
+        currentService = service
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        object Success : UiState()
+        data class Error(val message: String) : UiState()
+    }
+}
 
 ./app/src/main/java/com/example/multiai/MultiAIApplication.kt:
 
@@ -527,19 +766,833 @@ interface MultiAIService {
     </application>
 </manifest>
 
+./gradle/wrapper/gradle-wrapper.properties:
+
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+
+./o.txt:
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+
+> Task :app:mergeDebugResources FAILED
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+3 actionable tasks: 1 executed, 2 up-to-date
+.
+./.gradle
+./app
+./app/src
+./app/src/main
+./app/src/main/res
+./app/src/main/res/mipmap-hdpi
+./app/src/main/res/mipmap
+./app/src/main/res/mipmap-xhdpi
+./app/src/main/res/values
+./app/src/main/res/drawable
+./app/src/main/res/mipmap-mdpi
+./app/src/main/res/layout
+./app/src/main/res/mipmap-xxxhdpi
+./app/src/main/res/menu
+./app/src/main/res/mipmap-xxhdpi
+./app/src/main/java
+./app/src/main/java/com
+./app/src/main/java/com/example
+./app/src/main/java/com/example/multiai
+./app/src/main/java/com/example/multiai/di
+./app/src/main/java/com/example/multiai/ui
+./app/src/main/java/com/example/multiai/ui/chat
+./app/src/main/java/com/example/multiai/ui/chat/adapters
+./app/src/main/java/com/example/multiai/data
+./app/src/main/java/com/example/multiai/data/repository
+./app/src/main/java/com/example/multiai/data/db
+./app/src/main/java/com/example/multiai/data/db/entities
+./app/src/main/java/com/example/multiai/data/api
+./app/src/main/java/com/example/multiai/data/api/models
+./res
+./res/mipmap
+./res/mipmap/ic_launcher.xml
+./gradle
+./gradle/wrapper
+./and
+./settings.gradle
+./app/src/main/res/mipmap/ic_launcher.xml
+./app/src/main/res/values/colors.xml
+./app/src/main/res/values/strings.xml
+./app/src/main/res/values/styles.xml
+./app/src/main/res/drawable/ic_send.xml
+./app/src/main/res/layout/item_message.xml
+./app/src/main/res/layout/activity_chat.xml
+./app/src/main/java/com/example/multiai/di/DatabaseModule.kt
+./app/src/main/java/com/example/multiai/di/NetworkModule.kt
+./app/src/main/java/com/example/multiai/ui/chat/ChatActivity.kt
+./app/src/main/java/com/example/multiai/ui/chat/adapters/ChatAdapter.kt
+./app/src/main/java/com/example/multiai/ui/chat/ChatViewModel.kt
+./app/src/main/java/com/example/multiai/MultiAIApplication.kt
+./app/src/main/java/com/example/multiai/data/repository/ChatRepository.kt
+./app/src/main/java/com/example/multiai/data/db/entities/Message.kt
+./app/src/main/java/com/example/multiai/data/db/ChatDatabase.kt
+./app/src/main/java/com/example/multiai/data/api/models/ChatRequest.kt
+./app/src/main/java/com/example/multiai/data/api/models/ChatResponse.kt
+./app/src/main/java/com/example/multiai/data/api/MultiAIService.kt
+./app/src/main/AndroidManifest.xml
+./gradle/wrapper/gradle-wrapper.properties
+./o.txt
+./README.md
+./gradle.properties
+./output.txt
+./build.gradle.bak
+./build.gradle
+./settings.gradle:
+
+include ':app'
+./app/src/main/res/mipmap/ic_launcher.xml:
+
+<!-- ic_launcher.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
+     <!-- ic_launcher_round.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
+./app/src/main/res/values/colors.xml:
+
+<resources>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="white">#FFFFFF</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="
+
+
+./app/src/main/res/values/strings.xml:
+
+<resources>
+    <string name="app_name">MultiAI</string>
+    <string name="message_hint">Nachricht eingeben...</string>
+    <string name="send">Senden</string>
+    <string name="error_no_service">Kein Service ausgewählt</string>
+    <string name="error_sending_message">Fehler beim Senden der Nachricht</string>
+</resources>
+
+./app/src/main/res/values/styles.xml:
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.MultiAI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/purple_700</item>
+    </style>
+</resources>
+
+
+./app/src/main/res/drawable/ic_send.xml:
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="?attr/colorControlNormal"
+        android:pathData="M2.01,21L23,12 2.01,3 2,10l15,2 -15,2z"/>
+</vector>
+
+./app/src/main/res/layout/item_message.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/messageCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_gravity="end"
+        app:cardBackgroundColor="?attr/colorPrimary"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp">
+
+        <TextView
+            android:id="@+id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"/>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
+
+./app/src/main/res/layout/activity_chat.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="@string/app_name"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/serviceChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:singleSelection="true"
+            android:background="?attr/colorSurface"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="8dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/messageInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/messageInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/message_hint"
+                    android:inputType="textMultiLine"
+                    android:maxLines="4"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:icon="@drawable/ic_send"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+./app/src/main/java/com/example/multiai/di/DatabaseModule.kt:
+
+package com.example.multiai.di
+
+import android.content.Context
+import androidx.room.Room
+import com.example.multiai.data.db.ChatDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DatabaseModule {
+
+    @Provides
+    @Singleton
+    fun provideChatDatabase(
+        @ApplicationContext context: Context
+    ): ChatDatabase {
+        return Room.databaseBuilder(
+            context,
+            ChatDatabase::class.java,
+            "chat_database"
+        ).build()
+    }
+
+    @Provides
+    fun provideMessageDao(database: ChatDatabase) = database.messageDao()
+}
+
+./app/src/main/java/com/example/multiai/di/NetworkModule.kt:
+
+package com.example.multiai.di
+
+import com.example.multiai.data.api.MultiAIService
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://your-server-url/") // TODO: Update with your server URL
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMultiAIService(retrofit: Retrofit): MultiAIService {
+        return retrofit.create(MultiAIService::class.java)
+    }
+}
+
+./app/src/main/java/com/example/multiai/ui/chat/ChatActivity.kt:
+
+package com.example.multiai.ui.chat
+
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.multiai.databinding.ActivityChatBinding
+import com.example.multiai.ui.chat.adapters.ChatAdapter
+import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+@AndroidEntryPoint
+class ChatActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityChatBinding
+    private val viewModel: ChatViewModel by viewModels()
+    private val chatAdapter = ChatAdapter()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupUI()
+        observeViewModel()
+    }
+
+    private fun setupUI() {
+        binding.apply {
+            // RecyclerView setup
+            chatRecyclerView.apply {
+                adapter = chatAdapter
+                layoutManager = LinearLayoutManager(context).apply {
+                    stackFromEnd = true
+                }
+            }
+
+            // Send button
+            sendButton.setOnClickListener {
+                val message = messageInput.text?.toString()
+                if (!message.isNullOrBlank()) {
+                    viewModel.sendMessage(message)
+                    messageInput.text?.clear()
+                }
+            }
+        }
+    }
+
+    private fun observeViewModel() {
+        // Observe available services
+        viewModel.availableServices.observe(this) { services ->
+            binding.serviceChips.removeAllViews()
+            services.forEach { service ->
+                val chip = Chip(this).apply {
+                    text = service
+                    isCheckable = true
+                    setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) viewModel.setCurrentService(service)
+                    }
+                }
+                binding.serviceChips.addView(chip)
+            }
+        }
+
+        // Observe messages
+        viewModel.messages.observe(this) { messages ->
+            chatAdapter.submitList(messages) {
+                binding.chatRecyclerView.smoothScrollToPosition(messages.size - 1)
+            }
+        }
+
+        // Observe UI state
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    is ChatViewModel.UiState.Error -> {
+                        Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
+                    }
+                    is ChatViewModel.UiState.Loading -> {
+                        binding.sendButton.isEnabled = false
+                    }
+                    is ChatViewModel.UiState.Success -> {
+                        binding.sendButton.isEnabled = true
+                    }
+                }
+            }
+        }
+    }
+}
+
+./app/src/main/java/com/example/multiai/ui/chat/adapters/ChatAdapter.kt:
+
+package com.example.multiai.ui.chat.adapters
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.Gravity
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.databinding.ItemMessageBinding
+import io.noties.markwon.Markwon
+
+class ChatAdapter : ListAdapter<Message, ChatAdapter.MessageViewHolder>(MessageDiffCallback()) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+        val binding = ItemMessageBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return MessageViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    inner class MessageViewHolder(
+        private val binding: ItemMessageBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        
+        private val markwon = Markwon.create(binding.root.context)
+
+        fun bind(message: Message) {
+            binding.apply {
+                if (message.isFromUser) {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.END
+                        marginStart = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                } else {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.START
+                        marginStart = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                    // Parse Markdown für Bot-Antworten
+                    markwon.setMarkdown(messageText, message.content)
+                }
+
+                // Normale Textnachricht für Benutzer
+                if (message.isFromUser) {
+                    messageText.text = message.content
+                }
+            }
+        }
+    }
+
+    class MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
+
+./app/src/main/java/com/example/multiai/ui/chat/ChatViewModel.kt:
+
+package com.example.multiai.ui.chat
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.data.repository.ChatRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val repository: ChatRepository
+) : ViewModel() {
+
+    private val _messages = MutableLiveData<List<Message>>()
+    val messages: LiveData<List<Message>> = _messages
+
+    private val _availableServices = MutableLiveData<List<String>>()
+    val availableServices: LiveData<List<String>> = _availableServices
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Success)
+    val uiState: StateFlow<UiState> = _uiState
+
+    private var currentService: String? = null
+
+    init {
+        loadServices()
+        observeMessages()
+    }
+
+    private fun observeMessages() {
+        viewModelScope.launch {
+            repository.getAllMessages()
+                .catch { e -> 
+                    _uiState.value = UiState.Error(e.message ?: "Fehler beim Laden der Nachrichten")
+                }
+                .collect { messages ->
+                    _messages.value = messages
+                }
+        }
+    }
+
+    private fun loadServices() {
+        viewModelScope.launch {
+            try {
+                val services = repository.getAvailableServices()
+                _availableServices.value = services
+                if (services.isNotEmpty() && currentService == null) {
+                    currentService = services.first()
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Laden der Services: ${e.message}")
+            }
+        }
+    }
+
+    fun sendMessage(content: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.value = UiState.Loading
+
+                currentService?.let { service ->
+                    // Speichere Benutzernachricht
+                    val userMessage = Message(
+                        content = content,
+                        isFromUser = true,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(userMessage)
+
+                    // Sende an API
+                    val response = repository.sendMessage(service, content)
+
+                    // Speichere Bot-Antwort
+                    val botMessage = Message(
+                        content = response.response,
+                        isFromUser = false,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(botMessage)
+
+                    _uiState.value = UiState.Success
+                } ?: run {
+                    _uiState.value = UiState.Error("Kein Service ausgewählt")
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Senden der Nachricht: ${e.message}")
+            }
+        }
+    }
+
+    fun setCurrentService(service: String) {
+        currentService = service
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        object Success : UiState()
+        data class Error(val message: String) : UiState()
+    }
+}
+
+./app/src/main/java/com/example/multiai/MultiAIApplication.kt:
+
+package com.example.multiai
+
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class MultiAIApplication : Application()
+
+./app/src/main/java/com/example/multiai/data/repository/ChatRepository.kt:
+
+package com.example.multiai.data.repository
+
+import com.example.multiai.data.api.MultiAIService
+import com.example.multiai.data.db.ChatDatabase
+import com.example.multiai.data.api.models.ChatRequest
+import com.example.multiai.data.db.entities.Message
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class ChatRepository @Inject constructor(
+    private val api: MultiAIService,
+    private val db: ChatDatabase
+) {
+    fun getAllMessages(): Flow<List<Message>> = db.messageDao().getAllMessages()
+
+    suspend fun saveMessage(message: Message) = db.messageDao().insert(message)
+
+    suspend fun sendMessage(service: String, content: String): ChatResponse {
+        return api.sendMessage(ChatRequest(service = service, message = content))
+    }
+
+    suspend fun getAvailableServices(): List<String> {
+        return api.getServices().services
+    }
+
+    suspend fun getServiceConfig(service: String): Map<String, Any> {
+        return api.getServiceConfig(service)
+    }
+}
+
+./app/src/main/java/com/example/multiai/data/db/entities/Message.kt:
+
+package com.example.multiai.data.db.entities
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "messages")
+data class Message(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val content: String,
+    val isFromUser: Boolean,
+    val timestamp: Long,
+    val service: String? = null
+)
+
+./app/src/main/java/com/example/multiai/data/db/ChatDatabase.kt:
+
+package com.example.multiai.data.db
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.example.multiai.data.db.entities.Message
+
+@Database(entities = [Message::class], version = 1)
+abstract class ChatDatabase : RoomDatabase() {
+    abstract fun messageDao(): MessageDao
+}
+
+@Dao
+interface MessageDao {
+    @Query("SELECT * FROM messages ORDER BY timestamp ASC")
+    fun getAllMessages(): Flow<List<Message>>
+
+    @Insert
+    suspend fun insert(message: Message)
+}
+
+./app/src/main/java/com/example/multiai/data/api/models/ChatRequest.kt:
+
+package com.example.multiai.data.api.models
+
+data class ChatRequest(
+    val service: String,
+    val message: String,
+    val config: Map<String, Any>? = null,
+    val systemPrompt: String? = null
+)
+
+./app/src/main/java/com/example/multiai/data/api/models/ChatResponse.kt:
+
+package com.example.multiai.data.api.models
+
+data class ChatResponse(
+    val response: String,
+    val service: String
+)
+
+data class ServicesResponse(
+    val services: List<String>
+)
+
+./app/src/main/java/com/example/multiai/data/api/MultiAIService.kt:
+
+package com.example.multiai.data.api
+
+import com.example.multiai.data.api.models.ChatRequest
+import com.example.multiai.data.api.models.ChatResponse
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+
+interface MultiAIService {
+    @POST("chat")
+    suspend fun sendMessage(@Body request: ChatRequest): ChatResponse
+
+    @GET("services")
+    suspend fun getServices(): ServicesResponse
+
+    @GET("service/{service}/config")
+    suspend fun getServiceConfig(@Path("service") service: String): Map<String, Any>
+}
+
+./app/src/main/AndroidManifest.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".MultiAIApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MultiAI">
+        
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+
+./gradle/wrapper/gradle-wrapper.properties:
+
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+
+./o.txt:
+
+
+./README.md:
+
+# AI
+
+./gradle.properties:
+
+android.useAndroidX=true
+android.enableJetifier=true
+android.suppressUnsupportedCompileSdk=34
 ./output.txt:
 
 Ordnerstrukrur: 
 
 .
+./.gradle
 ./app
 ./app/src
 ./app/src/main
 ./app/src/main/res
+./app/src/main/res/mipmap-hdpi
+./app/src/main/res/mipmap
+./app/src/main/res/mipmap-xhdpi
 ./app/src/main/res/values
 ./app/src/main/res/drawable
+./app/src/main/res/mipmap-mdpi
 ./app/src/main/res/layout
+./app/src/main/res/mipmap-xxxhdpi
 ./app/src/main/res/menu
+./app/src/main/res/mipmap-xxhdpi
 ./app/src/main/java
 ./app/src/main/java/com
 ./app/src/main/java/com/example
@@ -554,12 +1607,22 @@ Ordnerstrukrur:
 ./app/src/main/java/com/example/multiai/data/db/entities
 ./app/src/main/java/com/example/multiai/data/api
 ./app/src/main/java/com/example/multiai/data/api/models
+./res
+./res/mipmap
+./res/mipmap/ic_launcher.xml
+./gradle
+./gradle/wrapper
+./and
 
 
 Dateien: 
 
+./settings.gradle
+./app/src/main/res/mipmap/ic_launcher.xml
 ./app/src/main/res/values/colors.xml
 ./app/src/main/res/values/strings.xml
+./app/src/main/res/values/styles.xml
+./app/src/main/res/drawable/ic_send.xml
 ./app/src/main/res/layout/item_message.xml
 ./app/src/main/res/layout/activity_chat.xml
 ./app/src/main/java/com/example/multiai/di/DatabaseModule.kt
@@ -575,23 +1638,43 @@ Dateien:
 ./app/src/main/java/com/example/multiai/data/api/models/ChatResponse.kt
 ./app/src/main/java/com/example/multiai/data/api/MultiAIService.kt
 ./app/src/main/AndroidManifest.xml
+./gradle/wrapper/gradle-wrapper.properties
+./o.txt
+./README.md
+./gradle.properties
 ./output.txt
+./build.gradle.bak
+./build.gradle
 
 
 Dateiinhalte: 
 
+./settings.gradle:
+
+include ':app'
+./app/src/main/res/mipmap/ic_launcher.xml:
+
+<!-- ic_launcher.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
+     <!-- ic_launcher_round.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
 ./app/src/main/res/values/colors.xml:
 
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#1976D2</color>
-    <color name="primary_dark">#1565C0</color>
-    <color name="primary_light">#BBDEFB</color>
-    <color name="accent">#FF4081</color>
-    <color name="received_message_background">#F5F5F5</color>
-    <color name="received_message_text">#000000</color>
-    <color name="sent_message_text">#FFFFFF</color>
-</resources>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="white">#FFFFFF</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="
+
 
 ./app/src/main/res/values/strings.xml:
 
@@ -602,6 +1685,34 @@ Dateiinhalte:
     <string name="error_no_service">Kein Service ausgewählt</string>
     <string name="error_sending_message">Fehler beim Senden der Nachricht</string>
 </resources>
+
+./app/src/main/res/values/styles.xml:
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.MultiAI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/purple_700</item>
+    </style>
+</resources>
+
+
+./app/src/main/res/drawable/ic_send.xml:
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="?attr/colorControlNormal"
+        android:pathData="M2.01,21L23,12 2.01,3 2,10l15,2 -15,2z"/>
+</vector>
 
 ./app/src/main/res/layout/item_message.xml:
 
@@ -898,11 +2009,185 @@ class ChatActivity : AppCompatActivity() {
 
 ./app/src/main/java/com/example/multiai/ui/chat/adapters/ChatAdapter.kt:
 
-# Inhalt wie vorher gezeigt in ChatAdapter.kt
+package com.example.multiai.ui.chat.adapters
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.Gravity
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.databinding.ItemMessageBinding
+import io.noties.markwon.Markwon
+
+class ChatAdapter : ListAdapter<Message, ChatAdapter.MessageViewHolder>(MessageDiffCallback()) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+        val binding = ItemMessageBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return MessageViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    inner class MessageViewHolder(
+        private val binding: ItemMessageBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        
+        private val markwon = Markwon.create(binding.root.context)
+
+        fun bind(message: Message) {
+            binding.apply {
+                if (message.isFromUser) {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.END
+                        marginStart = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                } else {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.START
+                        marginStart = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                    // Parse Markdown für Bot-Antworten
+                    markwon.setMarkdown(messageText, message.content)
+                }
+
+                // Normale Textnachricht für Benutzer
+                if (message.isFromUser) {
+                    messageText.text = message.content
+                }
+            }
+        }
+    }
+
+    class MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
 
 ./app/src/main/java/com/example/multiai/ui/chat/ChatViewModel.kt:
 
-# Inhalt wie vorher gezeigt in ChatViewModel.kt
+package com.example.multiai.ui.chat
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.data.repository.ChatRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val repository: ChatRepository
+) : ViewModel() {
+
+    private val _messages = MutableLiveData<List<Message>>()
+    val messages: LiveData<List<Message>> = _messages
+
+    private val _availableServices = MutableLiveData<List<String>>()
+    val availableServices: LiveData<List<String>> = _availableServices
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Success)
+    val uiState: StateFlow<UiState> = _uiState
+
+    private var currentService: String? = null
+
+    init {
+        loadServices()
+        observeMessages()
+    }
+
+    private fun observeMessages() {
+        viewModelScope.launch {
+            repository.getAllMessages()
+                .catch { e -> 
+                    _uiState.value = UiState.Error(e.message ?: "Fehler beim Laden der Nachrichten")
+                }
+                .collect { messages ->
+                    _messages.value = messages
+                }
+        }
+    }
+
+    private fun loadServices() {
+        viewModelScope.launch {
+            try {
+                val services = repository.getAvailableServices()
+                _availableServices.value = services
+                if (services.isNotEmpty() && currentService == null) {
+                    currentService = services.first()
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Laden der Services: ${e.message}")
+            }
+        }
+    }
+
+    fun sendMessage(content: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.value = UiState.Loading
+
+                currentService?.let { service ->
+                    // Speichere Benutzernachricht
+                    val userMessage = Message(
+                        content = content,
+                        isFromUser = true,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(userMessage)
+
+                    // Sende an API
+                    val response = repository.sendMessage(service, content)
+
+                    // Speichere Bot-Antwort
+                    val botMessage = Message(
+                        content = response.response,
+                        isFromUser = false,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(botMessage)
+
+                    _uiState.value = UiState.Success
+                } ?: run {
+                    _uiState.value = UiState.Error("Kein Service ausgewählt")
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Senden der Nachricht: ${e.message}")
+            }
+        }
+    }
+
+    fun setCurrentService(service: String) {
+        currentService = service
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        object Success : UiState()
+        data class Error(val message: String) : UiState()
+    }
+}
 
 ./app/src/main/java/com/example/multiai/MultiAIApplication.kt:
 
@@ -1058,6 +2343,844 @@ interface MultiAIService {
     </application>
 </manifest>
 
+./gradle/wrapper/gradle-wrapper.properties:
+
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+
+./o.txt:
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+
+> Task :app:mergeDebugResources FAILED
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+3 actionable tasks: 1 executed, 2 up-to-date
+.
+./.gradle
+./app
+./app/src
+./app/src/main
+./app/src/main/res
+./app/src/main/res/mipmap-hdpi
+./app/src/main/res/mipmap
+./app/src/main/res/mipmap-xhdpi
+./app/src/main/res/values
+./app/src/main/res/drawable
+./app/src/main/res/mipmap-mdpi
+./app/src/main/res/layout
+./app/src/main/res/mipmap-xxxhdpi
+./app/src/main/res/menu
+./app/src/main/res/mipmap-xxhdpi
+./app/src/main/java
+./app/src/main/java/com
+./app/src/main/java/com/example
+./app/src/main/java/com/example/multiai
+./app/src/main/java/com/example/multiai/di
+./app/src/main/java/com/example/multiai/ui
+./app/src/main/java/com/example/multiai/ui/chat
+./app/src/main/java/com/example/multiai/ui/chat/adapters
+./app/src/main/java/com/example/multiai/data
+./app/src/main/java/com/example/multiai/data/repository
+./app/src/main/java/com/example/multiai/data/db
+./app/src/main/java/com/example/multiai/data/db/entities
+./app/src/main/java/com/example/multiai/data/api
+./app/src/main/java/com/example/multiai/data/api/models
+./res
+./res/mipmap
+./res/mipmap/ic_launcher.xml
+./gradle
+./gradle/wrapper
+./and
+./settings.gradle
+./app/src/main/res/mipmap/ic_launcher.xml
+./app/src/main/res/values/colors.xml
+./app/src/main/res/values/strings.xml
+./app/src/main/res/values/styles.xml
+./app/src/main/res/drawable/ic_send.xml
+./app/src/main/res/layout/item_message.xml
+./app/src/main/res/layout/activity_chat.xml
+./app/src/main/java/com/example/multiai/di/DatabaseModule.kt
+./app/src/main/java/com/example/multiai/di/NetworkModule.kt
+./app/src/main/java/com/example/multiai/ui/chat/ChatActivity.kt
+./app/src/main/java/com/example/multiai/ui/chat/adapters/ChatAdapter.kt
+./app/src/main/java/com/example/multiai/ui/chat/ChatViewModel.kt
+./app/src/main/java/com/example/multiai/MultiAIApplication.kt
+./app/src/main/java/com/example/multiai/data/repository/ChatRepository.kt
+./app/src/main/java/com/example/multiai/data/db/entities/Message.kt
+./app/src/main/java/com/example/multiai/data/db/ChatDatabase.kt
+./app/src/main/java/com/example/multiai/data/api/models/ChatRequest.kt
+./app/src/main/java/com/example/multiai/data/api/models/ChatResponse.kt
+./app/src/main/java/com/example/multiai/data/api/MultiAIService.kt
+./app/src/main/AndroidManifest.xml
+./gradle/wrapper/gradle-wrapper.properties
+./o.txt
+./README.md
+./gradle.properties
+./output.txt
+./build.gradle.bak
+./build.gradle
+./settings.gradle:
+
+include ':app'
+./app/src/main/res/mipmap/ic_launcher.xml:
+
+<!-- ic_launcher.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
+     <!-- ic_launcher_round.xml -->
+     <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+         <background android:drawable="@color/ic_launcher_background"/>
+         <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+     </adaptive-icon>
+
+./app/src/main/res/values/colors.xml:
+
+<resources>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="white">#FFFFFF</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="
+
+
+./app/src/main/res/values/strings.xml:
+
+<resources>
+    <string name="app_name">MultiAI</string>
+    <string name="message_hint">Nachricht eingeben...</string>
+    <string name="send">Senden</string>
+    <string name="error_no_service">Kein Service ausgewählt</string>
+    <string name="error_sending_message">Fehler beim Senden der Nachricht</string>
+</resources>
+
+./app/src/main/res/values/styles.xml:
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.MultiAI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/purple_700</item>
+    </style>
+</resources>
+
+
+./app/src/main/res/drawable/ic_send.xml:
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="?attr/colorControlNormal"
+        android:pathData="M2.01,21L23,12 2.01,3 2,10l15,2 -15,2z"/>
+</vector>
+
+./app/src/main/res/layout/item_message.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/messageCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_gravity="end"
+        app:cardBackgroundColor="?attr/colorPrimary"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp">
+
+        <TextView
+            android:id="@+id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"/>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
+
+./app/src/main/res/layout/activity_chat.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="@string/app_name"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/serviceChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:singleSelection="true"
+            android:background="?attr/colorSurface"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="8dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/messageInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/messageInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/message_hint"
+                    android:inputType="textMultiLine"
+                    android:maxLines="4"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:icon="@drawable/ic_send"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+./app/src/main/java/com/example/multiai/di/DatabaseModule.kt:
+
+package com.example.multiai.di
+
+import android.content.Context
+import androidx.room.Room
+import com.example.multiai.data.db.ChatDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DatabaseModule {
+
+    @Provides
+    @Singleton
+    fun provideChatDatabase(
+        @ApplicationContext context: Context
+    ): ChatDatabase {
+        return Room.databaseBuilder(
+            context,
+            ChatDatabase::class.java,
+            "chat_database"
+        ).build()
+    }
+
+    @Provides
+    fun provideMessageDao(database: ChatDatabase) = database.messageDao()
+}
+
+./app/src/main/java/com/example/multiai/di/NetworkModule.kt:
+
+package com.example.multiai.di
+
+import com.example.multiai.data.api.MultiAIService
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://your-server-url/") // TODO: Update with your server URL
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMultiAIService(retrofit: Retrofit): MultiAIService {
+        return retrofit.create(MultiAIService::class.java)
+    }
+}
+
+./app/src/main/java/com/example/multiai/ui/chat/ChatActivity.kt:
+
+package com.example.multiai.ui.chat
+
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.multiai.databinding.ActivityChatBinding
+import com.example.multiai.ui.chat.adapters.ChatAdapter
+import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+@AndroidEntryPoint
+class ChatActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityChatBinding
+    private val viewModel: ChatViewModel by viewModels()
+    private val chatAdapter = ChatAdapter()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupUI()
+        observeViewModel()
+    }
+
+    private fun setupUI() {
+        binding.apply {
+            // RecyclerView setup
+            chatRecyclerView.apply {
+                adapter = chatAdapter
+                layoutManager = LinearLayoutManager(context).apply {
+                    stackFromEnd = true
+                }
+            }
+
+            // Send button
+            sendButton.setOnClickListener {
+                val message = messageInput.text?.toString()
+                if (!message.isNullOrBlank()) {
+                    viewModel.sendMessage(message)
+                    messageInput.text?.clear()
+                }
+            }
+        }
+    }
+
+    private fun observeViewModel() {
+        // Observe available services
+        viewModel.availableServices.observe(this) { services ->
+            binding.serviceChips.removeAllViews()
+            services.forEach { service ->
+                val chip = Chip(this).apply {
+                    text = service
+                    isCheckable = true
+                    setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) viewModel.setCurrentService(service)
+                    }
+                }
+                binding.serviceChips.addView(chip)
+            }
+        }
+
+        // Observe messages
+        viewModel.messages.observe(this) { messages ->
+            chatAdapter.submitList(messages) {
+                binding.chatRecyclerView.smoothScrollToPosition(messages.size - 1)
+            }
+        }
+
+        // Observe UI state
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    is ChatViewModel.UiState.Error -> {
+                        Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
+                    }
+                    is ChatViewModel.UiState.Loading -> {
+                        binding.sendButton.isEnabled = false
+                    }
+                    is ChatViewModel.UiState.Success -> {
+                        binding.sendButton.isEnabled = true
+                    }
+                }
+            }
+        }
+    }
+}
+
+./app/src/main/java/com/example/multiai/ui/chat/adapters/ChatAdapter.kt:
+
+package com.example.multiai.ui.chat.adapters
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.Gravity
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.databinding.ItemMessageBinding
+import io.noties.markwon.Markwon
+
+class ChatAdapter : ListAdapter<Message, ChatAdapter.MessageViewHolder>(MessageDiffCallback()) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+        val binding = ItemMessageBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return MessageViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    inner class MessageViewHolder(
+        private val binding: ItemMessageBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        
+        private val markwon = Markwon.create(binding.root.context)
+
+        fun bind(message: Message) {
+            binding.apply {
+                if (message.isFromUser) {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.END
+                        marginStart = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                } else {
+                    messageCard.layoutParams = (messageCard.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        gravity = Gravity.START
+                        marginStart = 8 * binding.root.context.resources.displayMetrics.density.toInt()
+                        marginEnd = 48 * binding.root.context.resources.displayMetrics.density.toInt()
+                    }
+                    // Parse Markdown für Bot-Antworten
+                    markwon.setMarkdown(messageText, message.content)
+                }
+
+                // Normale Textnachricht für Benutzer
+                if (message.isFromUser) {
+                    messageText.text = message.content
+                }
+            }
+        }
+    }
+
+    class MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
+
+./app/src/main/java/com/example/multiai/ui/chat/ChatViewModel.kt:
+
+package com.example.multiai.ui.chat
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.multiai.data.db.entities.Message
+import com.example.multiai.data.repository.ChatRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val repository: ChatRepository
+) : ViewModel() {
+
+    private val _messages = MutableLiveData<List<Message>>()
+    val messages: LiveData<List<Message>> = _messages
+
+    private val _availableServices = MutableLiveData<List<String>>()
+    val availableServices: LiveData<List<String>> = _availableServices
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Success)
+    val uiState: StateFlow<UiState> = _uiState
+
+    private var currentService: String? = null
+
+    init {
+        loadServices()
+        observeMessages()
+    }
+
+    private fun observeMessages() {
+        viewModelScope.launch {
+            repository.getAllMessages()
+                .catch { e -> 
+                    _uiState.value = UiState.Error(e.message ?: "Fehler beim Laden der Nachrichten")
+                }
+                .collect { messages ->
+                    _messages.value = messages
+                }
+        }
+    }
+
+    private fun loadServices() {
+        viewModelScope.launch {
+            try {
+                val services = repository.getAvailableServices()
+                _availableServices.value = services
+                if (services.isNotEmpty() && currentService == null) {
+                    currentService = services.first()
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Laden der Services: ${e.message}")
+            }
+        }
+    }
+
+    fun sendMessage(content: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.value = UiState.Loading
+
+                currentService?.let { service ->
+                    // Speichere Benutzernachricht
+                    val userMessage = Message(
+                        content = content,
+                        isFromUser = true,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(userMessage)
+
+                    // Sende an API
+                    val response = repository.sendMessage(service, content)
+
+                    // Speichere Bot-Antwort
+                    val botMessage = Message(
+                        content = response.response,
+                        isFromUser = false,
+                        timestamp = System.currentTimeMillis(),
+                        service = service
+                    )
+                    repository.saveMessage(botMessage)
+
+                    _uiState.value = UiState.Success
+                } ?: run {
+                    _uiState.value = UiState.Error("Kein Service ausgewählt")
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Fehler beim Senden der Nachricht: ${e.message}")
+            }
+        }
+    }
+
+    fun setCurrentService(service: String) {
+        currentService = service
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        object Success : UiState()
+        data class Error(val message: String) : UiState()
+    }
+}
+
+./app/src/main/java/com/example/multiai/MultiAIApplication.kt:
+
+package com.example.multiai
+
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class MultiAIApplication : Application()
+
+./app/src/main/java/com/example/multiai/data/repository/ChatRepository.kt:
+
+package com.example.multiai.data.repository
+
+import com.example.multiai.data.api.MultiAIService
+import com.example.multiai.data.db.ChatDatabase
+import com.example.multiai.data.api.models.ChatRequest
+import com.example.multiai.data.db.entities.Message
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class ChatRepository @Inject constructor(
+    private val api: MultiAIService,
+    private val db: ChatDatabase
+) {
+    fun getAllMessages(): Flow<List<Message>> = db.messageDao().getAllMessages()
+
+    suspend fun saveMessage(message: Message) = db.messageDao().insert(message)
+
+    suspend fun sendMessage(service: String, content: String): ChatResponse {
+        return api.sendMessage(ChatRequest(service = service, message = content))
+    }
+
+    suspend fun getAvailableServices(): List<String> {
+        return api.getServices().services
+    }
+
+    suspend fun getServiceConfig(service: String): Map<String, Any> {
+        return api.getServiceConfig(service)
+    }
+}
+
+./app/src/main/java/com/example/multiai/data/db/entities/Message.kt:
+
+package com.example.multiai.data.db.entities
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "messages")
+data class Message(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val content: String,
+    val isFromUser: Boolean,
+    val timestamp: Long,
+    val service: String? = null
+)
+
+./app/src/main/java/com/example/multiai/data/db/ChatDatabase.kt:
+
+package com.example.multiai.data.db
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.example.multiai.data.db.entities.Message
+
+@Database(entities = [Message::class], version = 1)
+abstract class ChatDatabase : RoomDatabase() {
+    abstract fun messageDao(): MessageDao
+}
+
+@Dao
+interface MessageDao {
+    @Query("SELECT * FROM messages ORDER BY timestamp ASC")
+    fun getAllMessages(): Flow<List<Message>>
+
+    @Insert
+    suspend fun insert(message: Message)
+}
+
+./app/src/main/java/com/example/multiai/data/api/models/ChatRequest.kt:
+
+package com.example.multiai.data.api.models
+
+data class ChatRequest(
+    val service: String,
+    val message: String,
+    val config: Map<String, Any>? = null,
+    val systemPrompt: String? = null
+)
+
+./app/src/main/java/com/example/multiai/data/api/models/ChatResponse.kt:
+
+package com.example.multiai.data.api.models
+
+data class ChatResponse(
+    val response: String,
+    val service: String
+)
+
+data class ServicesResponse(
+    val services: List<String>
+)
+
+./app/src/main/java/com/example/multiai/data/api/MultiAIService.kt:
+
+package com.example.multiai.data.api
+
+import com.example.multiai.data.api.models.ChatRequest
+import com.example.multiai.data.api.models.ChatResponse
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+
+interface MultiAIService {
+    @POST("chat")
+    suspend fun sendMessage(@Body request: ChatRequest): ChatResponse
+
+    @GET("services")
+    suspend fun getServices(): ServicesResponse
+
+    @GET("service/{service}/config")
+    suspend fun getServiceConfig(@Path("service") service: String): Map<String, Any>
+}
+
+./app/src/main/AndroidManifest.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".MultiAIApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MultiAI">
+        
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+
+./gradle/wrapper/gradle-wrapper.properties:
+
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+
+./o.txt:
+
+
+./README.md:
+
+# AI
+
+./gradle.properties:
+
+android.useAndroidX=true
+android.enableJetifier=true
+android.suppressUnsupportedCompileSdk=34
 ./output.txt:
 
 
+./build.gradle.bak:
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id 'com.example.multiai' version '8.2.0' apply false
+    id 'com.android.library' version '7.4.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
+}
+
+./build.gradle:
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.48'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10" // Add this line
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

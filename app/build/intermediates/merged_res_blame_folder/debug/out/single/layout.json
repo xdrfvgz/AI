@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.example.multiai.app-mergeDebugResources-41:/layout/activity_chat.xml",
+        "source": "com.example.multiai.app-main-44:/layout/activity_chat.xml"
+    },
+    {
+        "merged": "com.example.multiai.app-mergeDebugResources-41:/layout/item_message.xml",
+        "source": "com.example.multiai.app-main-44:/layout/item_message.xml"
+    }
+]
