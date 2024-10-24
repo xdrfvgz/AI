@@ -4,9 +4,12 @@ color accent
 color primary
 color primary_dark
 color primary_light
+color purple_500
+color purple_700
 color received_message_background
 color received_message_text
 color sent_message_text
+color white
 drawable ic_send
 id chatRecyclerView
 id messageCard
